@@ -13,9 +13,7 @@ dependencies:
     sdk: flutter
   
   tswiri_database:
-    git:
-      url: https://github.com/TswiriSoftware/tswiri_database.git
-      ref: isar_update # branch name
+    path: ../tswiri_database
 
   google_mlkit_barcode_scanning: ^0.4.0
   google_mlkit_image_labeling: ^0.4.0
