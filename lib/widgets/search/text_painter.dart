@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
 
 import 'package:tswiri_database/export.dart';
+import 'package:tswiri_database_interface/functions/embedded/get_bounding_box.dart';
 
 class MLTextPainter extends CustomPainter {
   MLTextPainter(this.mlTextElement, this.image, this.photoSize);
@@ -12,7 +13,7 @@ class MLTextPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double photoAspectRatio = photoSize.height / photoSize.width;
-    Rect boundingBox = mlTextElement.cornerPoints.getBoundingBox;
+    Rect boundingBox = getBoundingBox(mlTextElement.cornerPoints.data!);
     double boundingBoxWidth = boundingBox.width;
     double boundingBoxHeight = boundingBox.height;
 
@@ -23,7 +24,7 @@ class MLTextPainter extends CustomPainter {
     }
 
     final dst = Offset.zero & size;
-    final src = mlTextElement.cornerPoints.getBoundingBox;
+    final src = getBoundingBox(mlTextElement.cornerPoints.data!);
     canvas.drawImageRect(image, src, dst, Paint());
   }
 

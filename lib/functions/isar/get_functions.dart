@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tswiri_database/export.dart';
 import 'package:tswiri_database/tswiri_database.dart';
+import 'package:tswiri_database_interface/functions/embedded/get_icondata.dart';
 //TODO: finish comments.
 
 int getTagTextID(String text) {
@@ -73,7 +74,8 @@ String getMLDetectedElementText(int detectedLabelTextID) {
 }
 
 IconData getContainerTypeIcon(int containerTypeID) {
-  return isar!.containerTypes.getSync(containerTypeID)!.iconData.iconData!;
+  return getIconData(
+      isar!.containerTypes.getSync(containerTypeID)!.iconData.data!);
 }
 
 bool canDeleteMarker(Marker marker) {

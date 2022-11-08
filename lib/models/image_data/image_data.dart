@@ -10,6 +10,7 @@ import 'package:image/image.dart' as img;
 import 'package:tswiri_database/embedded/embedded_size/embedded_size.dart';
 import 'package:tswiri_database/export.dart';
 import 'package:tswiri_database/tswiri_database.dart';
+import 'package:tswiri_database_interface/functions/embedded/get_size.dart';
 
 ///ImageData this is used to display an image with all its labels aswell as editing it.
 ///
@@ -331,7 +332,7 @@ class ImageData {
 
     return ImageData(
       photoFile: photoFile,
-      size: photo.photoSize.size,
+      size: getSize(photo.photoSize.data!),
       rotation: InputImageRotation.rotation0deg,
       photoLabels: photoLabels,
       mlPhotoLabels: mlPhotoLabels,

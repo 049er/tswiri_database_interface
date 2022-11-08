@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tswiri_database_interface/functions/embedded/get_size.dart';
 import 'package:tswiri_database_interface/models/find/find_result_models.dart';
 import 'package:tswiri_database_interface/models/find/shopping_cart.dart';
 import 'package:tswiri_database_interface/widgets/search/text_painter.dart';
@@ -266,7 +267,7 @@ class ObjectLabelResultCard extends StatelessWidget {
                     painter: ImagePainter(
                       result.mlObject,
                       snapshot.data!,
-                      result.photo.photoSize.size,
+                      getSize(result.photo.photoSize.data!),
                     ),
                   ),
                 );
@@ -392,7 +393,7 @@ class MLObjectLabelResultCard extends StatelessWidget {
                     painter: ImagePainter(
                       result.mlObject,
                       snapshot.data!,
-                      result.photo.photoSize.size,
+                      getSize(result.photo.photoSize.data!),
                     ),
                   ),
                 );
@@ -465,7 +466,7 @@ class MLTextElementResultCard extends StatelessWidget {
                     painter: MLTextPainter(
                       result.mlTextElement,
                       snapshot.data!,
-                      result.photo.photoSize.size,
+                      getSize(result.photo.photoSize.data!),
                     ),
                   ),
                 );
