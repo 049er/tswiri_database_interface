@@ -80,7 +80,7 @@ class GridController {
         .gridUIDEqualTo(gridUID)
         .findAllSync();
 
-    // log(coordinates.toString());
+    log(coordinates.toString());
 
     //2. Calcualte the unitOffset to use.
     Offset unitOffset = calculateUnitVectors(
