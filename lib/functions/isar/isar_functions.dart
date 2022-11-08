@@ -4,7 +4,7 @@ import 'package:tswiri_database/export.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tswiri_database/tswiri_database.dart';
-import 'package:tswiri_database_interface/mobile_database.dart';
+import 'package:tswiri_database/mobile_database.dart';
 
 ///Sets the appIsarDirectory.
 ///This is the directory where the isar database file's can be found.

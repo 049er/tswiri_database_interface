@@ -10,7 +10,7 @@ import 'package:tswiri_database/export.dart';
 import 'package:tswiri_database/tswiri_database.dart';
 import 'package:tswiri_database_interface/functions/backup/create_backup.dart';
 import 'package:tswiri_database_interface/functions/backup/restore_backup.dart';
-import 'package:tswiri_database_interface/mobile_database.dart';
+import 'package:tswiri_database/mobile_database.dart';
 import 'package:tswiri_database_interface/models/settings/global_settings.dart';
 
 ///Creates a backup (.zip) of the current Space.
