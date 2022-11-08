@@ -19,7 +19,11 @@ class ImagePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double photoAspectRatio = photoSize.height / photoSize.width;
-    Rect boundingBox = mlObject.getBoundingBox();
+    Rect boundingBox = Rect.fromLTRB(
+        mlObject.boundingBox[0],
+        mlObject.boundingBox[1],
+        mlObject.boundingBox[2],
+        mlObject.boundingBox[3]);
     double boundingBoxWidth = boundingBox.width;
     double boundingBoxHeight = boundingBox.height;
 

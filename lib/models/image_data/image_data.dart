@@ -168,7 +168,7 @@ class ImageData {
       ..photoName = photoName
       ..thumbnailExtention = extention
       ..thumbnailName = '${photoName}_thumbnail'
-      ..photoSize = EmbeddedSize.fromSize(size);
+      ..photoSize = EmbeddedSize.fromSize(embeddedFromSize(size));
 
     int photoID = 0;
     isar!.writeTxnSync(() {

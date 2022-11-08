@@ -6,3 +6,7 @@ IconData getIconData(List<String> data) {
     fontFamily: data[1],
   );
 }
+
+List<String> iconDataToString(IconData iconData) {
+  return [iconData.codePoint.toString(), iconData.fontFamily.toString()];
+}

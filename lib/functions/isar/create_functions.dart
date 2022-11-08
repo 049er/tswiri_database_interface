@@ -3,7 +3,8 @@ import 'package:tswiri_database/embedded/embedded_color/embedded_color.dart';
 import 'package:tswiri_database/embedded/embedded_icon_data/embedded_icon_data.dart';
 import 'package:tswiri_database/export.dart';
 import 'package:tswiri_database/tswiri_database.dart';
-import 'package:tswiri_database_interface/functions/embedded/icon_data_to_string.dart';
+import 'package:tswiri_database_interface/functions/embedded/get_color.dart';
+import 'package:tswiri_database_interface/functions/embedded/get_icon_data.dart';
 
 ///Creates a new CatalogedContainer.
 ///
@@ -76,7 +77,8 @@ void createBasicContainerTypes({
           ..canContain = [1, 2, 3]
           ..moveable = false
           ..enclosing = false
-          ..containerColor = EmbeddedColor.fromColor(Colors.deepOrange)
+          ..containerColor =
+              EmbeddedColor.fromColor(fromColor(Colors.deepOrange))
           ..iconData = EmbeddedIconData.fromIconData(
               //  TswiriIcons.area
               iconDataToString(const IconData(
@@ -94,7 +96,7 @@ void createBasicContainerTypes({
             ..canContain = [2, 3]
             ..moveable = false
             ..enclosing = false
-            ..containerColor = EmbeddedColor.fromColor(Colors.green)
+            ..containerColor = EmbeddedColor.fromColor(fromColor(Colors.green))
             ..iconData = EmbeddedIconData.fromIconData(
                 // TswiriIcons.shelf
                 iconDataToString(const IconData(
@@ -113,7 +115,7 @@ void createBasicContainerTypes({
             ..canContain = [1]
             ..moveable = false
             ..enclosing = true
-            ..containerColor = EmbeddedColor.fromColor(Colors.blue)
+            ..containerColor = EmbeddedColor.fromColor(fromColor(Colors.blue))
             ..iconData = EmbeddedIconData.fromIconData(
                 //  TswiriIcons.drawer
                 iconDataToString(const IconData(
@@ -131,7 +133,8 @@ void createBasicContainerTypes({
             ..canContain = [1]
             ..moveable = true
             ..enclosing = true
-            ..containerColor = EmbeddedColor.fromColor(const Color(0xFFF98866))
+            ..containerColor =
+                EmbeddedColor.fromColor(fromColor(const Color(0xFFF98866)))
             ..iconData = EmbeddedIconData.fromIconData(
                 // TswiriIcons.box
                 iconDataToString(const IconData(
