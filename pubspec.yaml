@@ -2,6 +2,7 @@ name: tswiri_database_interface
 description: A new Flutter package project.
 version: 0.0.1
 homepage:
+publish_to: none
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -10,6 +11,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  tswiri_database:
+    git:
+      url: https://github.com/TswiriSoftware/tswiri_database.git
+      ref: isar_update # branch name
+
+  google_mlkit_barcode_scanning: ^0.4.0
+  google_mlkit_image_labeling: ^0.4.0
+  google_mlkit_object_detection: ^0.5.0
+  google_mlkit_text_recognition: ^0.4.0  
 
 dev_dependencies:
   flutter_test:
