@@ -364,9 +364,9 @@ class ImageData {
 
   ///Add a objectLabel for an existing photo.
   void addObjectLabel(TagText tagText, int objectID) {
-    ObjectLabel newObjectLabel = ObjectLabel()
-      ..objectID = objectID
-      ..tagTextID = tagText.id;
+    // ObjectLabel newObjectLabel = ObjectLabel()
+    //   ..objectID = objectID
+    //   ..tagTextID = tagText.id;
   }
 
   ///Remove a objectLabel for an existing photo.

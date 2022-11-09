@@ -11,6 +11,7 @@ import 'package:tswiri_database_interface/models/inter_barcode/inter_barcode_vec
 import 'package:tswiri_database_interface/models/inter_barcode/on_image_inter_barcode_data.dart';
 import 'package:tswiri_database_interface/models/settings/app_settings.dart';
 
+// ignore: depend_on_referenced_packages
 import 'package:vector_math/vector_math_64.dart' as vm;
 
 class GridController {

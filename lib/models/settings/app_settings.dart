@@ -1,5 +1,4 @@
 import 'package:camera/camera.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tswiri_database_interface/models/settings/global_settings.dart';
 

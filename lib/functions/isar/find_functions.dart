@@ -1,3 +1,4 @@
+// ignore: depend_on_referenced_packages
 import 'package:isar/isar.dart';
 import 'package:tswiri_database/collections/cataloged_container/cataloged_container.dart';
 import 'package:tswiri_database/collections/container_relationship/container_relationship.dart';

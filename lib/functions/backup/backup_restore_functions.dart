@@ -5,7 +5,6 @@ import 'dart:isolate';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:tswiri_database/export.dart';
 
 import 'package:tswiri_database/tswiri_database.dart';
 import 'package:tswiri_database_interface/functions/backup/create_backup.dart';
@@ -22,16 +21,16 @@ Future<File?> createBackupFile({
   required String fileName,
   required Function(String) progressCallback,
 }) async {
-  FlutterIsolate? _isolate;
-  ReceivePort _uiPort = ReceivePort();
+  FlutterIsolate? isolate;
+  ReceivePort uiPort = ReceivePort();
 
   //Temporary Directory.
   Directory temporaryDirectory = await getTemporaryDirectory();
 
-  _isolate = await FlutterIsolate.spawn(
+  isolate = await FlutterIsolate.spawn(
     createBackupIsolate,
     [
-      _uiPort.sendPort,
+      uiPort.sendPort,
       spaceDirectory!.path,
       temporaryDirectory.path,
       isarVersion.toString(),
@@ -41,10 +40,10 @@ Future<File?> createBackupFile({
 
   var completer = Completer<File>();
 
-  _uiPort.listen((message) {
+  uiPort.listen((message) {
     switch (message[0]) {
       case 'done':
-        killIsolate(_isolate);
+        killIsolate(isolate);
         openIsarIfClosed();
         break;
       case 'path':
@@ -65,8 +64,8 @@ Future<bool?> restoreBackupFile({
   required File backupFile,
   required Function(String) progressCallback,
 }) async {
-  FlutterIsolate? _isolate;
-  ReceivePort _uiPort = ReceivePort();
+  FlutterIsolate? isolate;
+  ReceivePort uiPort = ReceivePort();
 
   // log(photoDirectory!.path, name: 'Photo Directory');
   // log(spaceDirectory!.path, name: 'Isar Directory');
@@ -78,10 +77,10 @@ Future<bool?> restoreBackupFile({
   //Temporary Directory.
   Directory temporaryDirectory = await getTemporaryDirectory();
 
-  _isolate = await FlutterIsolate.spawn(
+  isolate = await FlutterIsolate.spawn(
     restoreBackupIsolate,
     [
-      _uiPort.sendPort,
+      uiPort.sendPort,
       spaceDirectory!.path,
       isarDirectory!.path,
       photoDirectory!.path,
@@ -93,15 +92,15 @@ Future<bool?> restoreBackupFile({
 
   var completer = Completer<bool>();
 
-  _uiPort.listen((message) {
+  uiPort.listen((message) {
     if (message[0] == 'done') {
       completer.complete(true);
-      killIsolate(_isolate);
+      killIsolate(isolate);
       openIsarIfClosed();
     } else if (message[0] == 'error') {
       switch (message[1]) {
         case 'file_error':
-          killIsolate(_isolate);
+          killIsolate(isolate);
           openIsarIfClosed();
           completer.complete(false);
           break;

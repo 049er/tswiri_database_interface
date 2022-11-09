@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:string_similarity/string_similarity.dart';
-import 'package:tswiri_database/collections/tag_text/tag_text.dart';
 import 'package:tswiri_database/export.dart';
 import 'package:tswiri_database/tswiri_database.dart';
 import 'package:tswiri_database_interface/models/find/find_result_models.dart';
