@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tswiri_database/collections/cataloged_coordinate/cataloged_coordinate.dart';
+import 'package:tswiri_database/collections/essential/cataloged_coordinate/cataloged_coordinate.dart';
 import 'package:tswiri_database/embedded/embedded_vector_3/embedded_vector_3.dart';
 import 'package:tswiri_database_interface/functions/data/data_processing_isolates.dart';
 import 'package:vector_math/vector_math_64.dart' as vm;

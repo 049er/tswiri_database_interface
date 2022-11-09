@@ -1,7 +1,8 @@
 // ignore: depend_on_referenced_packages
 import 'package:isar/isar.dart';
-import 'package:tswiri_database/collections/cataloged_container/cataloged_container.dart';
-import 'package:tswiri_database/collections/container_relationship/container_relationship.dart';
+import 'package:tswiri_database/collections/essential/cataloged_container/cataloged_container.dart';
+import 'package:tswiri_database/collections/essential/container_relationship/container_relationship.dart';
+
 import 'package:tswiri_database/tswiri_database.dart';
 
 ///Find all decendants of this cataloged container.

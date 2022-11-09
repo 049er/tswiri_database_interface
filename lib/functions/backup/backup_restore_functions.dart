@@ -5,11 +5,11 @@ import 'dart:isolate';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tswiri_database/initializers/mobile_database.dart';
 
 import 'package:tswiri_database/tswiri_database.dart';
 import 'package:tswiri_database_interface/functions/backup/create_backup.dart';
 import 'package:tswiri_database_interface/functions/backup/restore_backup.dart';
-import 'package:tswiri_database/mobile_database.dart';
 import 'package:tswiri_database_interface/models/settings/global_settings.dart';
 
 ///Creates a backup (.zip) of the current Space.
