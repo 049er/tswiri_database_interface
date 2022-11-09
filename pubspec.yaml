@@ -11,14 +11,28 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
-  tswiri_database:
-    path: ../tswiri_database
 
+  path_provider: ^2.0.11
+  intl: ^0.17.0
+  shared_preferences: ^2.0.15
   google_mlkit_barcode_scanning: ^0.4.0
   google_mlkit_image_labeling: ^0.4.0
   google_mlkit_object_detection: ^0.5.0
-  google_mlkit_text_recognition: ^0.4.0  
+  google_mlkit_text_recognition: ^0.4.0 
+  flutter_isolate: ^2.0.2
+  pdf: ^3.8.4
+  provider: ^6.0.3
+
+  tswiri_database:
+    path: ../tswiri_database
+  google_sign_in: ^5.4.2
+  googleapis: ^9.2.0
+  http: ^0.13.5
+  string_similarity: ^2.0.0
+  camera: ^0.10.0+4
+  
+
+   
 
 dev_dependencies:
   flutter_test:
