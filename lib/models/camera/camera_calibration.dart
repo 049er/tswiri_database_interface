@@ -30,10 +30,12 @@ class CameraCalibration {
     String? barcodeUID = barcodeData.entries.first.value.displayValue;
     if (barcodeUID != null) {
       //Query the database for BarcodeSize
-      CatalogedBarcode? barcodeProperty = isar!.catalogedBarcodes
-          .filter()
-          .barcodeUIDMatches(barcodeUID)
-          .findFirstSync();
+      CatalogedBarcode? barcodeProperty =
+          getCatalogedBarcodeSync(barcodeUID: barcodeUID);
+      // isar!.catalogedBarcodes
+      //     .filter()
+      //     .barcodeUIDMatches(barcodeUID)
+      //     .findFirstSync();
 
       if (barcodeProperty != null) {
         //Set barcode size
@@ -106,9 +108,10 @@ class CameraCalibration {
         )
         .toList();
 
-    isar!.writeTxnSync(
-      () => isar!.cameraCalibrationEntrys.putAllSync(distanceSizeEntries),
-    );
+    putCameraCalibrationEntries(entries: distanceSizeEntries);
+    // isar!.writeTxnSync(
+    //   () => isar!.cameraCalibrationEntrys.putAllSync(distanceSizeEntries),
+    // );
   }
 
   double _calculateBarcodeDiagonalLength(Barcode barcode) {

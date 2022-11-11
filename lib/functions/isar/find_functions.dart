@@ -26,10 +26,13 @@ List<CatalogedContainer> findCatalogedContainerDecendants(
 
     List<CatalogedContainer> catalogedContainers = [];
     for (var decendant in decendants) {
-      catalogedContainers.add(isar!.catalogedContainers
-          .filter()
-          .containerUIDMatches(decendant.containerUID)
-          .findFirstSync()!);
+      catalogedContainers
+          .add(getCatalogedContainerSync(containerUID: decendant.containerUID)!
+              // isar!.catalogedContainers
+              //     .filter()
+              //     .containerUIDMatches(decendant.containerUID)
+              //     .findFirstSync()!,
+              );
     }
 
     return catalogedContainers;
@@ -41,8 +44,9 @@ List<CatalogedContainer> findCatalogedContainerDecendants(
 
 ///Find container relationships with this containerUID as parentUID.
 List<ContainerRelationship> findDecendants(String containerUID) {
-  return isar!.containerRelationships
-      .filter()
-      .parentUIDMatches(containerUID)
-      .findAllSync();
+  return getContainerRelationshipsSync(parentUID: containerUID);
+  // isar!.containerRelationships
+  //     .filter()
+  //     .parentUIDMatches(containerUID)
+  //     .findAllSync();
 }

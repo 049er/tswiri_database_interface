@@ -57,11 +57,13 @@ class ImageData {
 
     mlDetectedLabelTexts = [];
     if (mlDetectedLabelTextIDs.isNotEmpty) {
-      mlDetectedLabelTexts = isar!.mLDetectedLabelTexts
-          .filter()
-          .anyOf(
-              mlDetectedLabelTextIDs, (q, int element) => q.idEqualTo(element))
-          .findAllSync();
+      mlDetectedLabelTexts = getAllMlDetectedLabelTexts(
+          mlDetectedLabelTextIDs: mlDetectedLabelTextIDs);
+      // isar!.mLDetectedLabelTexts
+      //     .filter()
+      //     .anyOf(
+      //         mlDetectedLabelTextIDs, (q, int element) => q.idEqualTo(element))
+      //     .findAllSync();
     }
 
     //2. Find all the mLDetectedElementTexts.
@@ -70,11 +72,13 @@ class ImageData {
 
     mLDetectedElementTexts = [];
     if (mLDetectedElementTextIDs.isNotEmpty) {
-      mLDetectedElementTexts = isar!.mLDetectedElementTexts
-          .filter()
-          .allOf(mLDetectedElementTextIDs,
-              (q, int element) => q.idEqualTo(element))
-          .findAllSync();
+      mLDetectedElementTexts = getAllMlDetectedLElementTexts(
+          mLDetectedElementTextIDs: mLDetectedElementTextIDs);
+      // isar!.mLDetectedElementTexts
+      //     .filter()
+      //     .allOf(mLDetectedElementTextIDs,
+      //         (q, int element) => q.idEqualTo(element))
+      //     .findAllSync();
     }
 
     //3. find all the textTags.
@@ -84,10 +88,11 @@ class ImageData {
 
     tagTexts = [];
     if (mLDetectedElementTexts.isNotEmpty) {
-      tagTexts = isar!.tagTexts
-          .filter()
-          .allOf(tagTextIDs, (q, int element) => q.idEqualTo(element))
-          .findAllSync();
+      tagTexts = getAllTagTexts(tagTextIDs: tagTextIDs);
+      // isar!.tagTexts
+      //     .filter()
+      //     .allOf(tagTextIDs, (q, int element) => q.idEqualTo(element))
+      //     .findAllSync();
     }
   }
 
@@ -170,92 +175,19 @@ class ImageData {
       ..thumbnailName = '${photoName}_thumbnail'
       ..photoSize = EmbeddedSize.fromSize(embeddedFromSize(size));
 
-    int photoID = 0;
-    isar!.writeTxnSync(() {
-      photoID = isar!.photos.putSync(newPhoto);
-    });
+    int photoID = putPhoto(photo: newPhoto)!;
 
-    isar!.writeTxnSync(() {
-      ///Write Photo Labels to Isar.
-      for (MLPhotoLabel mlPhotoLabel in mlPhotoLabels) {
-        isar!.mLPhotoLabels.putSync(
-          MLPhotoLabel()
-            ..confidence = mlPhotoLabel.confidence
-            ..detectedLabelTextID = mlPhotoLabel.detectedLabelTextID
-            ..photoID = photoID
-            ..userFeedback = mlPhotoLabel.userFeedback,
-        );
-      }
-
-      for (PhotoLabel photoLabel in photoLabels) {
-        isar!.photoLabels.putSync(PhotoLabel()
-          ..photoID = photoID
-          ..tagTextID = photoLabel.tagTextID);
-      }
-
-      ///Write Objects to Isar.
-      for (MLObject mlObject in mlObjects) {
-        int objectID = isar!.mLObjects.putSync(
-          MLObject()
-            ..boundingBox = mlObject.boundingBox
-            ..photoID = photoID,
-        );
-
-        ///Write Object Labels to Isar.
-        for (MLObjectLabel mlObjectLabel in mlObjectLabels
-            .where((element) => element.objectID == mlObject.id)) {
-          isar!.mLObjectLabels.putSync(
-            MLObjectLabel()
-              ..confidence = mlObjectLabel.confidence
-              ..detectedLabelTextID = mlObjectLabel.detectedLabelTextID
-              ..objectID = objectID
-              ..userFeedback = mlObjectLabel.userFeedback,
-          );
-        }
-
-        for (ObjectLabel objectLabel in objectLabels
-            .where((element) => element.objectID == mlObject.id)) {
-          isar!.objectLabels.putSync(ObjectLabel()
-            ..objectID = objectID
-            ..tagTextID = objectLabel.tagTextID);
-        }
-      }
-
-      ///Write Text Blocks to isar.
-      for (MLTextBlock mlTextBlock in mlTextBlocks) {
-        int textBlockID = isar!.mLTextBlocks.putSync(
-          MLTextBlock()
-            ..cornerPoints = mlTextBlock.cornerPoints
-            ..recognizedLanguages = mlTextBlock.recognizedLanguages,
-        );
-
-        ///Write Text Lines to isar.
-        for (MLTextLine mlTextLine in mlTextLines
-            .where((element) => element.blockID == mlTextBlock.id)) {
-          int lineID = isar!.mLTextLines.putSync(
-            MLTextLine()
-              ..blockID = textBlockID
-              ..blockIndex = mlTextLine.blockIndex
-              ..cornerPoints = mlTextLine.cornerPoints
-              ..recognizedLanguages = mlTextLine.recognizedLanguages,
-          );
-
-          ///Write Text Elements to isar.
-          for (MLTextElement e in mlTextElements
-              .where((element) => element.lineID == mlTextLine.id)) {
-            isar!.mLTextElements.putSync(
-              MLTextElement()
-                ..cornerPoints = e.cornerPoints
-                ..detectedElementTextID = e.detectedElementTextID
-                ..lineID = lineID
-                ..lineIndex = e.lineIndex
-                ..photoID = photoID
-                ..userFeedback = e.userFeedback,
-            );
-          }
-        }
-      }
-    });
+    putPhotoLabels(
+      photoID: photoID,
+      mlPhotoLabels: mlPhotoLabels,
+      photoLabels: photoLabels,
+      mlObjects: mlObjects,
+      mlObjectLabels: mlObjectLabels,
+      objectLabels: objectLabels,
+      mlTextBlocks: mlTextBlocks,
+      mlTextLines: mlTextLines,
+      mlTextElements: mlTextElements,
+    );
   }
 
   ///Build an ImageData from a photo.
@@ -263,24 +195,30 @@ class ImageData {
     File photoFile = File(photo.getPhotoPath());
 
     //1. Find all the objects in the photo.
-    List<MLObject> mlObject =
-        isar!.mLObjects.filter().photoIDEqualTo(photo.id).findAllSync();
+    List<MLObject> mlObjects = getMlObjects(photoID: photo.id);
+    // isar!.mLObjects.filter().photoIDEqualTo(photo.id).findAllSync();
 
     //2. Find all the mlObject labels.
-    List<MLObjectLabel> mlObjectLabels = isar!.mLObjectLabels
-        .filter()
-        .allOf(mlObject, (q, MLObject element) => q.objectIDEqualTo(element.id))
-        .findAllSync();
+    List<MLObjectLabel> mlObjectLabels =
+        getRelatedMLObjectLabels(mlObjects: mlObjects);
+    // isar!.mLObjectLabels
+    //     .filter()
+    //     .allOf(
+    //         mlObjects, (q, MLObject element) => q.objectIDEqualTo(element.id))
+    //     .findAllSync();
 
     //3. Find all the object labels.
-    List<ObjectLabel> objectLabels = isar!.objectLabels
-        .filter()
-        .allOf(mlObject, (q, MLObject element) => q.objectIDEqualTo(element.id))
-        .findAllSync();
+    List<ObjectLabel> objectLabels =
+        getRelatedObjectLabels(mlObjects: mlObjects);
+    // isar!.objectLabels
+    //     .filter()
+    //     .allOf(
+    //         mlObjects, (q, MLObject element) => q.objectIDEqualTo(element.id))
+    //     .findAllSync();
 
     //4. Find all the mlTextElements.
-    List<MLTextElement> mlTextElements =
-        isar!.mLTextElements.filter().photoIDEqualTo(photo.id).findAllSync();
+    List<MLTextElement> mlTextElements = getMLTextElements(photoID: photo.id);
+    // isar!.mLTextElements.filter().photoIDEqualTo(photo.id).findAllSync();
 
     // log(mlTextElements.length.toString(), name: 'MLTextElements');
 
@@ -289,33 +227,35 @@ class ImageData {
 
     if (mlTextElements.isNotEmpty) {
       //5. Find all the mlTextLines.
-      mlTextLines = isar!.mLTextLines
-          .filter()
-          .anyOf(mlTextElements,
-              (q, MLTextElement element) => q.idEqualTo(element.lineID))
-          .findAllSync();
+      mlTextLines = getRelatedMLTextLines(mlTextElements: mlTextElements);
+      // isar!.mLTextLines
+      //     .filter()
+      //     .anyOf(mlTextElements,
+      //         (q, MLTextElement element) => q.idEqualTo(element.lineID))
+      //     .findAllSync();
 
       // log(mlTextLines.length.toString(), name: 'MLTextLines');
 
       if (mlTextLines.isNotEmpty) {
         //6. Find all the mlTextBlocks.
-        mlTextBlocks = isar!.mLTextBlocks
-            .filter()
-            .anyOf(mlTextLines,
-                (q, MLTextLine element) => q.idEqualTo(element.blockID))
-            .findAllSync();
+        mlTextBlocks = getRelatedTextBlocks(mlTextLines: mlTextLines);
+        // isar!.mLTextBlocks
+        //     .filter()
+        //     .anyOf(mlTextLines,
+        //         (q, MLTextLine element) => q.idEqualTo(element.blockID))
+        //     .findAllSync();
 
         // log(mlTextBlocks.length.toString(), name: 'MLTextBlock');
       }
     }
 
     //7. Find all the mlPhotoLabels.
-    List<MLPhotoLabel> mlPhotoLabels =
-        isar!.mLPhotoLabels.filter().photoIDEqualTo(photo.id).findAllSync();
+    List<MLPhotoLabel> mlPhotoLabels = getMLPhotoLabels(photoID: photo.id);
+    // isar!.mLPhotoLabels.filter().photoIDEqualTo(photo.id).findAllSync();
 
     //8. Find all the photoLabels.
-    List<PhotoLabel> photoLabels =
-        isar!.photoLabels.filter().photoIDEqualTo(photo.id).findAllSync();
+    List<PhotoLabel> photoLabels = getPhotoLabels(photoID: photo.id);
+    // isar!.photoLabels.filter().photoIDEqualTo(photo.id).findAllSync();
 
     // log(tagTextIDs.toString());
 
@@ -336,7 +276,7 @@ class ImageData {
       rotation: InputImageRotation.rotation0deg,
       photoLabels: photoLabels,
       mlPhotoLabels: mlPhotoLabels,
-      mlObjects: mlObject,
+      mlObjects: mlObjects,
       objectLabels: objectLabels,
       mlObjectLabels: mlObjectLabels,
       mlTextBlocks: mlTextBlocks,
@@ -356,7 +296,8 @@ class ImageData {
       tagTexts.add(tagText);
     }
 
-    isar!.photoLabels.putSync(newPhotoLabel);
+    putPhotoLabel(photoLabel: newPhotoLabel);
+    // isar!.photoLabels.putSync(newPhotoLabel);
   }
 
   ///Remove a photoLabel for an existing photo.

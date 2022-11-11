@@ -20,14 +20,15 @@ class GridController {
   });
 
   int gridUID;
-  late CatalogedGrid catalogedGrid = isar!.catalogedGrids.getSync(gridUID)!;
+  late CatalogedGrid catalogedGrid = getCatalogedGridSync(gridUID: gridUID)!;
+  // isar!.catalogedGrids.getSync(gridUID)!;
 
   late List<Marker> markers = findGridMarkers();
 
   void processData(List<dynamic> barcodeDataBatches) {
     //1. Get the Cataloged Barcodes.
-    List<CatalogedBarcode> barcodeProperties =
-        isar!.catalogedBarcodes.where().findAllSync();
+    List<CatalogedBarcode> barcodeProperties = getCatalogedBarcodesSync();
+    // isar!.catalogedBarcodes.where().findAllSync();
 
     //2. Create the onImageBarcodeData.
     List<OnImageInterBarcodeData> onImageInterBarcodeData =
@@ -55,19 +56,20 @@ class GridController {
     );
 
     //6. Create/Update Coordinates.
-    isar!.writeTxnSync(() {
-      //1. detele IT if IT exists.
-      isar!.catalogedCoordinates
-          .filter()
-          .gridUIDEqualTo(gridUID)
-          .deleteAllSync();
-      for (var coordinate in coordinates) {
-        //2. input IT.
-        isar!.catalogedCoordinates.putSync(coordinate);
-      }
-    });
+    putCoordinates(gridUID: gridUID, coordinates: coordinates);
+    // isar!.writeTxnSync(() {
+    //   //1. detele IT if IT exists.
+    //   isar!.catalogedCoordinates
+    //       .filter()
+    //       .gridUIDEqualTo(gridUID)
+    //       .deleteAllSync();
+    //   for (var coordinate in coordinates) {
+    //     //2. input IT.
+    //     isar!.catalogedCoordinates.putSync(coordinate);
+    //   }
+    // });
 
-    log(isar!.catalogedCoordinates.where().findAllSync().toString());
+    // log(isar!.catalogedCoordinates.where().findAllSync().toString());
   }
 
   ///Calculates a list of [DisplayPoint] to draw.
@@ -76,10 +78,9 @@ class GridController {
     String? selectedBarcodeUID,
   ) {
     //1. Find all the coordinates in the grid.
-    List<CatalogedCoordinate> coordinates = isar!.catalogedCoordinates
-        .filter()
-        .gridUIDEqualTo(gridUID)
-        .findAllSync();
+    List<CatalogedCoordinate> coordinates =
+        getCatalogedCoordinatesSync(gridUID: gridUID);
+    // isar!.catalogedCoordinates.filter().gridUIDEqualTo(gridUID).findAllSync();
 
     log(coordinates.toString());
 
@@ -92,7 +93,8 @@ class GridController {
 
     //3. List of all marker barcodeUIDs.
     List<String> markerBarcodeUIDs =
-        isar!.markers.where().findAllSync().map((e) => e.barcodeUID).toList();
+        getMarkers().map((e) => e.barcodeUID).toList();
+    // isar!.markers.where().findAllSync().map((e) => e.barcodeUID).toList();
 
     List<DisplayPoint> myPoints = [];
 
@@ -116,10 +118,12 @@ class GridController {
 
         DisplayPointType displayPointType = DisplayPointType.unkown;
 
-        CatalogedContainer? container = isar!.catalogedContainers
-            .filter()
-            .barcodeUIDMatches(catalogedCoordinate.barcodeUID)
-            .findFirstSync();
+        CatalogedContainer? container = getCatalogedContainerSync(
+            barcodeUID: catalogedCoordinate.barcodeUID);
+        // isar!.catalogedContainers
+        // .filter()
+        // .barcodeUIDMatches(catalogedCoordinate.barcodeUID)
+        // .findFirstSync();
 
         if (container != null) {
           displayPointType = DisplayPointType.normal;
@@ -149,33 +153,33 @@ class GridController {
   ///Finds all the markers of a given GridUID.
   List<Marker> findGridMarkers() {
     //If you have a grid id.
-    List<CatalogedCoordinate> catalogedCoordinates = isar!.catalogedCoordinates
-        .filter()
-        .gridUIDEqualTo(gridUID)
-        .findAllSync();
+    List<CatalogedCoordinate> catalogedCoordinates =
+        getCatalogedCoordinatesSync(gridUID: gridUID);
+    // isar!.catalogedCoordinates.filter().gridUIDEqualTo(gridUID).findAllSync();
 
     if (catalogedCoordinates.isNotEmpty) {
-      return isar!.markers
-          .filter()
-          .anyOf(catalogedCoordinates,
-              (q, CatalogedCoordinate e) => q.barcodeUIDMatches(e.barcodeUID))
-          .findAllSync();
+      return getMarkersInCatalogedCoordinates(
+          catalogedCoordinates: catalogedCoordinates);
     } else {
       //No Coordinates found so create a marker from the grid barcode.
       CatalogedCoordinate catalogedCoordinate = CatalogedCoordinate()
-        ..barcodeUID = isar!.catalogedGrids.getSync(gridUID)!.barcodeUID
+        ..barcodeUID = getCatalogedGridSync(gridUID: gridUID)!
+            .barcodeUID //isar!.catalogedGrids.getSync(gridUID)!.barcodeUID
         ..coordinate = EmbeddedVector3.fromVector(vm.Vector3(0, 0, 0))
         ..gridUID = gridUID
         ..rotation = null
         ..timestamp = DateTime.now().millisecondsSinceEpoch;
 
-      isar!.writeTxnSync(
-          () => isar!.catalogedCoordinates.putSync(catalogedCoordinate));
+      putCatalogedCoordiante(catalogedCoordinate: catalogedCoordinate);
+      // isar!.writeTxnSync(
+      //     () => isar!.catalogedCoordinates.putSync(catalogedCoordinate));
 
-      Marker marker = isar!.markers
-          .filter()
-          .barcodeUIDMatches(isar!.catalogedGrids.getSync(gridUID)!.barcodeUID)
-          .findFirstSync()!;
+      Marker marker = getMarker(
+          barcodeUID: getCatalogedGridSync(gridUID: gridUID)!.barcodeUID)!;
+      // isar!.markers
+      //     .filter()
+      //     .barcodeUIDMatches(isar!.catalogedGrids.getSync(gridUID)!.barcodeUID)
+      //     .findFirstSync()!;
 
       return [marker];
     }

@@ -5,7 +5,6 @@ import 'dart:isolate';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:tswiri_database/initializers/mobile_database.dart';
 
 import 'package:tswiri_database/tswiri_database.dart';
 import 'package:tswiri_database_interface/functions/backup/create_backup.dart';
@@ -70,9 +69,7 @@ Future<bool?> restoreBackupFile({
   // log(photoDirectory!.path, name: 'Photo Directory');
   // log(spaceDirectory!.path, name: 'Isar Directory');
 
-  if (isar!.isOpen) {
-    await isar!.close();
-  }
+  await closeIsar();
 
   //Temporary Directory.
   Directory temporaryDirectory = await getTemporaryDirectory();
@@ -123,9 +120,7 @@ void killIsolate(FlutterIsolate? isolate) {
 
 ///Opens isar if it is closed.
 void openIsarIfClosed() {
-  if (!isar!.isOpen) {
-    isar = initiateMobileIsar(inspector: true, directory: isarDirectory!.path);
-  }
+  initiateMobileIsar(inspector: true, directory: isarDirectory!.path);
 }
 
 String generateBackupFileName() {

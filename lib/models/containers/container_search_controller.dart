@@ -6,8 +6,8 @@ import 'package:tswiri_database_interface/functions/isar/find_functions.dart';
 class ContainerSearchController {
   late List<CatalogedContainer> searchResults = [];
 
-  late List<ContainerType> containerTypes =
-      isar!.containerTypes.where().findAllSync();
+  late List<ContainerType> containerTypes = getContainerTypesSync();
+  // isar!.containerTypes.where().findAllSync();
 
   ///Filters container entries using [ContainerType] and enteredKeyWord [String].
   void filterContainerEntries({
@@ -16,29 +16,29 @@ class ContainerSearchController {
   }) {
     searchResults.clear();
     if (enteredKeyWord != null && enteredKeyWord.isNotEmpty) {
-      searchResults.addAll(
-        isar!.catalogedContainers
-            .filter()
-            .anyOf(
-                containerTypes,
-                (q, ContainerType containerType) => q.optional(
-                    containerFilters.contains(containerType.containerTypeName),
-                    (q) => q.containerTypeIDEqualTo(containerType.id)))
-            .and()
-            .nameContains(enteredKeyWord, caseSensitive: false)
-            .findAllSync(),
-      );
+      // searchResults.addAll(
+      //   isar!.catalogedContainers
+      //       .filter()
+      //       .anyOf(
+      //           containerTypes,
+      //           (q, ContainerType containerType) => q.optional(
+      //               containerFilters.contains(containerType.containerTypeName),
+      //               (q) => q.containerTypeIDEqualTo(containerType.id)))
+      //       .and()
+      //       .nameContains(enteredKeyWord, caseSensitive: false)
+      //       .findAllSync(),
+      // );
     } else {
-      for (var containerType in containerTypes) {
-        if (containerFilters.contains(containerType.containerTypeName)) {
-          searchResults.addAll(
-            isar!.catalogedContainers
-                .filter()
-                .containerTypeIDEqualTo(containerType.id)
-                .findAllSync(),
-          );
-        }
-      }
+      // for (var containerType in containerTypes) {
+      //   if (containerFilters.contains(containerType.containerTypeName)) {
+      //     searchResults.addAll(
+      //       isar!.catalogedContainers
+      //           .filter()
+      //           .containerTypeIDEqualTo(containerType.id)
+      //           .findAllSync(),
+      //     );
+      //   }
+      // }
     }
   }
 
@@ -62,32 +62,32 @@ class ContainerSearchController {
         findCatalogedContainerDecendants(currentContainer);
 
     if (enteredKeyWord != null && enteredKeyWord.isNotEmpty) {
-      List<CatalogedContainer> containers = isar!.catalogedContainers
-          .filter()
-          .group(
-            (q) => q.anyOf(
-              containerTypes,
-              (q, ContainerType containerType) => q.optional(
-                containerFilters.contains(containerType.containerTypeName),
-                (q) => q.containerTypeIDEqualTo(containerType.id),
-              ),
-            ),
-          )
-          .and()
-          .nameContains(enteredKeyWord, caseSensitive: false)
-          .findAllSync();
+      // List<CatalogedContainer> containers = isar!.catalogedContainers
+      //     .filter()
+      //     .group(
+      //       (q) => q.anyOf(
+      //         containerTypes,
+      //         (q, ContainerType containerType) => q.optional(
+      //           containerFilters.contains(containerType.containerTypeName),
+      //           (q) => q.containerTypeIDEqualTo(containerType.id),
+      //         ),
+      //       ),
+      //     )
+      //     .and()
+      //     .nameContains(enteredKeyWord, caseSensitive: false)
+      //     .findAllSync();
 
-      searchResults.addAll(containers);
+      // searchResults.addAll(containers);
     } else {
-      for (var containerType in containerTypes) {
-        if (containerFilters.contains(containerType.containerTypeName)) {
-          List<CatalogedContainer> containers = isar!.catalogedContainers
-              .filter()
-              .containerTypeIDEqualTo(containerType.id)
-              .findAllSync();
-          searchResults.addAll(containers);
-        }
-      }
+      // for (var containerType in containerTypes) {
+      //   if (containerFilters.contains(containerType.containerTypeName)) {
+      //     List<CatalogedContainer> containers = isar!.catalogedContainers
+      //         .filter()
+      //         .containerTypeIDEqualTo(containerType.id)
+      //         .findAllSync();
+      //     searchResults.addAll(containers);
+      //   }
+      // }
     }
 
     searchResults.removeWhere((element) => element.id == currentContainer.id);

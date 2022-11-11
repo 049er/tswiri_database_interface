@@ -28,26 +28,31 @@ class TagTextController {
 
   ///Search the tag text table for matching tagtexts.
   void searchTags(String? enteredKeyword) {
-    if (enteredKeyword != null && enteredKeyword.isNotEmpty) {
-      displayTags = isar!.tagTexts
-          .filter()
-          .textContains(enteredKeyword, caseSensitive: false)
-          .and()
-          .not()
-          .group((q) => q.allOf(
-              assignedTags, (q, int tagTextID) => q.idEqualTo(tagTextID)))
-          .findAllSync()
-          .take(15)
-          .toList();
-    } else {
-      displayTags = isar!.tagTexts
-          .filter()
-          .not()
-          .group((q) => q.allOf(
-              assignedTags, (q, int tagTextID) => q.idEqualTo(tagTextID)))
-          .findAllSync()
-          .take(15)
-          .toList();
-    }
+    displayTags = filterTagTexts(
+            excludedTags: assignedTags.toList(), enteredKeyWord: enteredKeyword)
+        .take(15)
+        .toList();
+
+    // if (enteredKeyword != null && enteredKeyword.isNotEmpty) {
+    //   displayTags = isar!.tagTexts
+    //       .filter()
+    //       .textContains(enteredKeyword, caseSensitive: false)
+    //       .and()
+    //       .not()
+    //       .group((q) => q.allOf(
+    //           assignedTags, (q, int tagTextID) => q.idEqualTo(tagTextID)))
+    //       .findAllSync()
+    //       .take(15)
+    //       .toList();
+    // } else {
+    //   displayTags = isar!.tagTexts
+    //       .filter()
+    //       .not()
+    //       .group((q) => q.allOf(
+    //           assignedTags, (q, int tagTextID) => q.idEqualTo(tagTextID)))
+    //       .findAllSync()
+    //       .take(15)
+    //       .toList();
+    // }
   }
 }

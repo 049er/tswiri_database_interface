@@ -47,10 +47,11 @@ class ShoppingCart extends ChangeNotifier {
     return containers
         .map(
           (e) => ContainerBasket(
-            catalogedContainer: isar!.catalogedContainers
-                .filter()
-                .containerUIDMatches(e)
-                .findFirstSync()!,
+            catalogedContainer: getCatalogedContainerSync(containerUID: e)!,
+            // isar!.catalogedContainers
+            //     .filter()
+            //     .containerUIDMatches(e)
+            //     .findFirstSync()!,
             items:
                 itemList.where((element) => element.containerUID == e).toList(),
           ),

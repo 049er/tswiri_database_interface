@@ -31,14 +31,16 @@ CatalogedContainer createNewCatalogedContainer({
     ..description = description
     ..name = name;
 
-  isar!.writeTxnSync(
-    () => isar!.catalogedContainers.putSync(newCatalogedContainer),
-  );
+  int id = putCatalogedContainer(container: newCatalogedContainer);
+  // isar!.writeTxnSync(
+  //   () => isar!.catalogedContainers.putSync(newCatalogedContainer),
+  // );
 
-  return isar!.catalogedContainers
-      .filter()
-      .containerUIDMatches(newCatalogedContainer.containerUID)
-      .findFirstSync()!;
+  return getCatalogedContainerSync(id: id)!;
+  // isar!.catalogedContainers
+  //     .filter()
+  //     .containerUIDMatches(newCatalogedContainer.containerUID)
+  //     .findFirstSync()!;
 }
 
 ///Creates a containerRelationship from parentContainerUID and containerUID.
@@ -50,5 +52,6 @@ createContainerRelationship({
     ..parentUID = parentContainerUID
     ..containerUID = containerUID;
 
-  isar!.writeTxnSync(() => isar!.containerRelationships.putSync(relationship));
+  putContainerRelationship(containerRelationship: relationship);
+  // isar!.writeTxnSync(() => isar!.containerRelationships.putSync(relationship));
 }

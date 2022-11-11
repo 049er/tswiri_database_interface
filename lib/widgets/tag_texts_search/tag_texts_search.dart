@@ -137,7 +137,8 @@ class TagTextSearchState extends State<TagTextSearch> {
 
   Widget _tagChip(int tagTextID) {
     return ActionChip(
-      label: Text(isar!.tagTexts.getSync(tagTextID)!.text),
+      label: Text(getTagTextSync(id: tagTextID)?.text ??
+          'err'), //isar!.tagTexts.getSync(tagTextID)!.text
       onPressed: () {
         widget.onTagAdd(tagTextID);
         setState(() {
@@ -150,33 +151,40 @@ class TagTextSearchState extends State<TagTextSearch> {
 
   //Filter the displaytags by the enteredKeyWord
   void _filterTags({String? enteredKeyWord}) {
-    if (enteredKeyWord != null && enteredKeyWord.isNotEmpty) {
-      setState(() {
-        tagTextIDs = isar!.tagTexts
-            .filter()
-            .textContains(enteredKeyWord, caseSensitive: false)
-            .and()
-            .not()
-            .group((q) => q.anyOf(
-                excludedTags, (q, int tagTextID) => q.idEqualTo(tagTextID)))
-            .findAllSync()
-            .take(15)
-            .map((e) => e.id)
-            .toList();
-      });
-    } else {
-      setState(() {
-        tagTextIDs = isar!.tagTexts
-            .filter()
-            .not()
-            .group((q) => q.anyOf(
-                excludedTags, (q, int tagTextID) => q.idEqualTo(tagTextID)))
-            .findAllSync()
-            .take(15)
-            .map((e) => e.id)
-            .toList();
-      });
-    }
+    setState(() {
+      tagTextIDs = filterTagTexts(
+              excludedTags: excludedTags, enteredKeyWord: enteredKeyWord)
+          .take(15)
+          .map((e) => e.id)
+          .toList();
+    });
+    // if (enteredKeyWord != null && enteredKeyWord.isNotEmpty) {
+    //   setState(() {
+    //     tagTextIDs = isar!.tagTexts
+    //         .filter()
+    //         .textContains(enteredKeyWord, caseSensitive: false)
+    //         .and()
+    //         .not()
+    //         .group((q) => q.anyOf(
+    //             excludedTags, (q, int tagTextID) => q.idEqualTo(tagTextID)))
+    //         .findAllSync()
+    //         .take(15)
+    //         .map((e) => e.id)
+    //         .toList();
+    //   });
+    // } else {
+    //   setState(() {
+    //     tagTextIDs = isar!.tagTexts
+    //         .filter()
+    //         .not()
+    //         .group((q) => q.anyOf(
+    //             excludedTags, (q, int tagTextID) => q.idEqualTo(tagTextID)))
+    //         .findAllSync()
+    //         .take(15)
+    //         .map((e) => e.id)
+    //         .toList();
+    //   });
+    // }
   }
 
   ///Used to update display Tags.

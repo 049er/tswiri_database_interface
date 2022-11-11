@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_object_detection/google_mlkit_object_detection.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:tswiri_database/export.dart';
+import 'package:tswiri_database/tswiri_database.dart';
 import 'package:tswiri_database_interface/functions/general/coordinate_translator.dart';
-import 'package:tswiri_database_interface/functions/isar/get_functions.dart';
 import 'package:tswiri_database_interface/models/image_data/image_data.dart';
 
 ///The painter used by ml_label_paint.
@@ -133,7 +133,9 @@ class MLLabePainter extends CustomPainter {
         //   // log(textElements.toString());
 
         List<String> blockText = textElements
-            .map((e) => getMLDetectedElementText(e.detectedElementTextID))
+            .map((e) =>
+                getMlDetectedElementTextSync(id: e.detectedElementTextID)!
+                    .detectedText)
             .toList();
 
         builder.addText(

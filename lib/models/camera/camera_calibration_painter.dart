@@ -41,8 +41,8 @@ class CameraCalibrationVisualizerPainter extends CustomPainter {
     canvas.drawPoints(PointMode.points, equationPoints, equationPaint);
 
     //Draw the dataPoints
-    List<CameraCalibrationEntry> entries =
-        isar!.cameraCalibrationEntrys.where().findAllSync();
+    List<CameraCalibrationEntry> entries = getCameraCalibrationEntries();
+    // isar!.cameraCalibrationEntrys.where().findAllSync();
 
     List<Offset> dataPoints = [];
     for (var element in entries) {

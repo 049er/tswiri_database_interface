@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tswiri_database/initializers/mobile_database.dart';
 import 'package:tswiri_database/tswiri_database.dart';
 
 ///Sets the appIsarDirectory.
@@ -91,7 +90,7 @@ Future<void> swapSpace(Directory directory) async {
   prefs.setString(isarDirectoryPref, directory.path);
 
   //Close isar connection.
-  await isar!.close();
+  await closeIsar();
 
   //Update the isarDirectory.
   spaceDirectory = directory;
@@ -103,7 +102,7 @@ Future<void> swapSpace(Directory directory) async {
   await Future.delayed(const Duration(milliseconds: 250));
 
   //Initiate the isar connection again
-  isar = initiateMobileIsar(directory: isarDirectory!.path, inspector: true);
+  initiateMobileIsar(directory: isarDirectory!.path, inspector: true);
 }
 
 ///Create a new swap space.
