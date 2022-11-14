@@ -57,7 +57,7 @@ class ImageData {
 
     mlDetectedLabelTexts = [];
     if (mlDetectedLabelTextIDs.isNotEmpty) {
-      mlDetectedLabelTexts = getAllMlDetectedLabelTexts(
+      mlDetectedLabelTexts = getMlDetectedLabelTextsOnMlDetectedLabelTextIDs(
           mlDetectedLabelTextIDs: mlDetectedLabelTextIDs);
       // isar!.mLDetectedLabelTexts
       //     .filter()

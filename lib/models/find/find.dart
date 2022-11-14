@@ -89,10 +89,12 @@ class Find extends ChangeNotifier {
           filters.contains('Photo Labels') ||
           filters.contains('Object Labels')) {
         //Search TagText Table.
-        List<TagText> tagTexts = isar!.tagTexts
-            .filter()
-            .textContains(enteredKeyword, caseSensitive: false)
-            .findAllSync();
+        List<TagText> tagTexts =
+            getTagTextsThatContain(enteredKeyword: enteredKeyword);
+        // isar!.tagTexts
+        //     .filter()
+        //     .textContains(enteredKeyword, caseSensitive: false)
+        //     .findAllSync();
 
         if (filters.contains('Tags')) {
           //Add Tag Results.
@@ -110,11 +112,12 @@ class Find extends ChangeNotifier {
 
       if (filters.contains('ML Labels')) {
         //Search on MLDetectedLabelText.
-        List<MLDetectedLabelText> mlDetectedLabelTexts = isar!
-            .mLDetectedLabelTexts
-            .filter()
-            .detectedLabelTextContains(enteredKeyword, caseSensitive: false)
-            .findAllSync();
+        List<MLDetectedLabelText> mlDetectedLabelTexts =
+            getMLDetectedLabelTextsTagContain(enteredKeyword: enteredKeyword);
+        // isar!.mLDetectedLabelTexts
+        //     .filter()
+        //     .detectedLabelTextContains(enteredKeyword, caseSensitive: false)
+        //     .findAllSync();
 
         //Add mlPhotoLabel results.
         searchResults
@@ -126,11 +129,13 @@ class Find extends ChangeNotifier {
       }
 
       if (filters.contains('ML Text')) {
-        List<MLDetectedElementText> mlDetectedElementTexts = isar!
-            .mLDetectedElementTexts
-            .filter()
-            .detectedTextContains(enteredKeyword, caseSensitive: false)
-            .findAllSync();
+        List<MLDetectedElementText> mlDetectedElementTexts =
+            getMLDetectedElementTextsThatContain(
+                enteredKeyword: enteredKeyword);
+        // isar!.mLDetectedElementTexts
+        //     .filter()
+        //     .detectedTextContains(enteredKeyword, caseSensitive: false)
+        //     .findAllSync();
 
         //Add mlText results.
         searchResults
@@ -154,10 +159,12 @@ class Find extends ChangeNotifier {
   //Search on containerNames.
   List<NameResult> nameSearch(String enteredKeyword) {
     //List of containers where name contains enteredKeyword.
-    List<CatalogedContainer> containers = isar!.catalogedContainers
-        .filter()
-        .nameContains(enteredKeyword, caseSensitive: false)
-        .findAllSync();
+    List<CatalogedContainer> containers =
+        getCatalogedContainersNameContains(enteredKeyword: enteredKeyword);
+    // isar!.catalogedContainers
+    //     .filter()
+    //     .nameContains(enteredKeyword, caseSensitive: false)
+    //     .findAllSync();
 
     return containers.map(
       (e) {
@@ -175,10 +182,13 @@ class Find extends ChangeNotifier {
   //Search on containerDescriptions.
   List<DescriptionResult> descriptionSearch(String enteredKeyword) {
     //List of containers where name contains enteredKeyword.
-    List<CatalogedContainer> containers = isar!.catalogedContainers
-        .filter()
-        .descriptionContains(enteredKeyword, caseSensitive: false)
-        .findAllSync();
+    List<CatalogedContainer> containers =
+        getCatalogedContainersDescriptionContains(
+            enteredKeyword: enteredKeyword);
+    // isar!.catalogedContainers
+    //     .filter()
+    //     .descriptionContains(enteredKeyword, caseSensitive: false)
+    //     .findAllSync();
 
     return containers.map(
       (e) {
@@ -198,17 +208,18 @@ class Find extends ChangeNotifier {
 
     for (TagText tagText in tagTexts) {
       //Find relevant containerTags.
-      List<ContainerTag> containerTags = isar!.containerTags
-          .filter()
-          .tagTextIDEqualTo(tagText.id)
-          .findAllSync();
+      List<ContainerTag> containerTags =
+          getContainerTagsOnTagTextID(tagTextID: tagText.id);
+      // isar!.containerTags.filter().tagTextIDEqualTo(tagText.id).findAllSync();
 
       for (ContainerTag containerTag in containerTags) {
         //Find relevant CatalogedContainer.
-        CatalogedContainer? catalogedContainer = isar!.catalogedContainers
-            .filter()
-            .containerUIDMatches(containerTag.containerUID)
-            .findFirstSync();
+        CatalogedContainer? catalogedContainer =
+            getCatalogedContainerSync(containerUID: containerTag.containerUID);
+        // isar!.catalogedContainers
+        //     .filter()
+        //     .containerUIDMatches(containerTag.containerUID)
+        //     .findFirstSync();
 
         if (catalogedContainer != null) {
           //Create ContainerTag Result.
@@ -233,11 +244,12 @@ class Find extends ChangeNotifier {
 
     for (TagText tagText in tagTexts) {
       //Find relevant photoLabels.
-      List<PhotoLabel> photoLabels =
-          isar!.photoLabels.filter().tagTextIDEqualTo(tagText.id).findAllSync();
+      List<PhotoLabel> photoLabels = getPhotoLabels(tagTextID: tagText.id);
+      // isar!.photoLabels.filter().tagTextIDEqualTo(tagText.id).findAllSync();
 
       for (PhotoLabel photoLabel in photoLabels) {
-        Photo? photo = isar!.photos.getSync(photoLabel.photoID);
+        Photo? photo = getPhotoSync(id: photoLabel.photoID);
+        // isar!.photos.getSync(photoLabel.photoID);
         if (photo != null) {
           results.add(PhotoLabelResult(
             uid: 'plr_${photoLabel.id}',
@@ -261,17 +273,17 @@ class Find extends ChangeNotifier {
 
     for (TagText tagText in tagTexts) {
       //Find relevant objectLabels.
-      List<ObjectLabel> objectLabels = isar!.objectLabels
-          .filter()
-          .tagTextIDEqualTo(tagText.id)
-          .findAllSync();
+      List<ObjectLabel> objectLabels = getObjectLabels(tagTextID: tagText.id);
+      // isar!.objectLabels.filter().tagTextIDEqualTo(tagText.id).findAllSync();
 
       for (ObjectLabel objectLabel in objectLabels) {
         //Find relevant mlObject.
-        MLObject? mlObject = isar!.mLObjects.getSync(objectLabel.objectID);
+        MLObject? mlObject = getMLObject(id: objectLabel.objectID);
+        // isar!.mLObjects.getSync(objectLabel.objectID);
         if (mlObject != null) {
           //Find relevant photo.
-          Photo? photo = isar!.photos.getSync(mlObject.photoID);
+          Photo? photo = getPhotoSync(id: mlObject.photoID);
+          // isar!.photos.getSync(mlObject.photoID);
           if (photo != null) {
             //Create ObjectLabelResult.
             results.add(
@@ -299,14 +311,17 @@ class Find extends ChangeNotifier {
 
     for (MLDetectedLabelText mlDetectedLabel in mlDetectedLabelTexts) {
       //Find relevant mlPhotoLabels.
-      List<MLPhotoLabel> mlPhotoLabels = isar!.mLPhotoLabels
-          .filter()
-          .detectedLabelTextIDEqualTo(mlDetectedLabel.id)
-          .findAllSync();
+      List<MLPhotoLabel> mlPhotoLabels =
+          getMLPhotoLabels(mlDetectedLabelID: mlDetectedLabel.id);
+      // isar!.mLPhotoLabels
+      //     .filter()
+      //     .detectedLabelTextIDEqualTo(mlDetectedLabel.id)
+      //     .findAllSync();
 
       for (MLPhotoLabel mlPhotoLabel in mlPhotoLabels) {
         //Find relevant photo.
-        Photo? photo = isar!.photos.getSync(mlPhotoLabel.photoID!);
+        Photo? photo = getPhotoSync(id: mlPhotoLabel.photoID);
+        // isar!.photos.getSync(mlPhotoLabel.photoID!);
 
         if (photo != null &&
             mlDetectedLabel.hidden == false &&
@@ -334,17 +349,21 @@ class Find extends ChangeNotifier {
     List<MLObjectLabelResult> results = [];
     for (MLDetectedLabelText mlDetectedLabel in mlDetectedLabelTexts) {
       //Find relevant mlObjectLabels.
-      List<MLObjectLabel> mlObjectLabels = isar!.mLObjectLabels
-          .filter()
-          .detectedLabelTextIDEqualTo(mlDetectedLabel.id)
-          .findAllSync();
+      List<MLObjectLabel> mlObjectLabels =
+          getMLObjectLabels(detectedLabelTextID: mlDetectedLabel.id);
+      // isar!.mLObjectLabels
+      //     .filter()
+      //     .detectedLabelTextIDEqualTo(mlDetectedLabel.id)
+      //     .findAllSync();
 
       for (MLObjectLabel mlObjectLabel in mlObjectLabels) {
         //Find relevant MLObject.
-        MLObject? mlObject = isar!.mLObjects.getSync(mlObjectLabel.objectID);
+        MLObject? mlObject = getMLObject(id: mlObjectLabel.objectID);
+        // isar!.mLObjects.getSync(mlObjectLabel.objectID);
         if (mlObject != null) {
           //Find relevant photo.
-          Photo? photo = isar!.photos.getSync(mlObject.photoID);
+          Photo? photo = getPhotoSync(id: mlObject.photoID);
+          // isar!.photos.getSync(mlObject.photoID);
           if (photo != null && mlObjectLabel.userFeedback != false) {
             //Create MLObjectLabelResult.
             results.add(
@@ -372,14 +391,17 @@ class Find extends ChangeNotifier {
     for (MLDetectedElementText mlDetectedElementText
         in mlDetectedElementTexts) {
       //Find relevant mlTextElements.
-      List<MLTextElement> mlTextElements = isar!.mLTextElements
-          .filter()
-          .detectedElementTextIDEqualTo(mlDetectedElementText.id)
-          .findAllSync();
+      List<MLTextElement> mlTextElements =
+          getMLTextElements(mlDetectedElementTextID: mlDetectedElementText.id);
+      // isar!.mLTextElements
+      //     .filter()
+      //     .detectedElementTextIDEqualTo(mlDetectedElementText.id)
+      //     .findAllSync();
 
       for (MLTextElement mlTextElement in mlTextElements) {
         //Find relevent photo.
-        Photo? photo = isar!.photos.getSync(mlTextElement.photoID);
+        Photo? photo = getPhotoSync(id: mlTextElement.photoID);
+        // isar!.photos.getSync(mlTextElement.photoID);
         if (photo != null) {
           results.add(
             MLTextResult(

@@ -4,7 +4,7 @@ import 'package:tswiri_database/tswiri_database.dart';
 
 class ContainerManager with ChangeNotifier {
   ContainerManager() {
-    // containerTypes = isar!.containerTypes.where().findAllSync();
+    containerTypes = getContainerTypesSync();
   }
 
   late List<ContainerType> containerTypes;
