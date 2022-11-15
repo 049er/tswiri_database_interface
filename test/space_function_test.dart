@@ -28,7 +28,7 @@ void main() {
         spaceDirectory.deleteSync();
       }
 
-      List<String> spaces = await getSpacesOnDevice();
+      await getSpacesOnDevice();
       // expect(spaces, ['main_space', 'backups']);
     });
 

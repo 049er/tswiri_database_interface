@@ -25,7 +25,7 @@ class GridController {
 
   late List<Marker> markers = findGridMarkers();
 
-  void processData(List<dynamic> barcodeDataBatches) {
+  processData(List<dynamic> barcodeDataBatches) {
     //1. Get the Cataloged Barcodes.
     List<CatalogedBarcode> barcodeProperties = getCatalogedBarcodesSync();
     // isar!.catalogedBarcodes.where().findAllSync();
@@ -56,20 +56,10 @@ class GridController {
     );
 
     //6. Create/Update Coordinates.
-    putCoordinates(gridUID: gridUID, coordinates: coordinates);
-    // isar!.writeTxnSync(() {
-    //   //1. detele IT if IT exists.
-    //   isar!.catalogedCoordinates
-    //       .filter()
-    //       .gridUIDEqualTo(gridUID)
-    //       .deleteAllSync();
-    //   for (var coordinate in coordinates) {
-    //     //2. input IT.
-    //     isar!.catalogedCoordinates.putSync(coordinate);
-    //   }
-    // });
-
-    // log(isar!.catalogedCoordinates.where().findAllSync().toString());
+    updateCoordinates(
+      gridUID: gridUID,
+      coordinates: coordinates,
+    );
   }
 
   ///Calculates a list of [DisplayPoint] to draw.
@@ -80,7 +70,6 @@ class GridController {
     //1. Find all the coordinates in the grid.
     List<CatalogedCoordinate> coordinates =
         getCatalogedCoordinatesSync(gridUID: gridUID);
-    // isar!.catalogedCoordinates.filter().gridUIDEqualTo(gridUID).findAllSync();
 
     log(coordinates.toString());
 
@@ -94,7 +83,6 @@ class GridController {
     //3. List of all marker barcodeUIDs.
     List<String> markerBarcodeUIDs =
         getMarkers().map((e) => e.barcodeUID).toList();
-    // isar!.markers.where().findAllSync().map((e) => e.barcodeUID).toList();
 
     List<DisplayPoint> myPoints = [];
 
@@ -120,11 +108,6 @@ class GridController {
 
         CatalogedContainer? container = getCatalogedContainerSync(
             barcodeUID: catalogedCoordinate.barcodeUID);
-        // isar!.catalogedContainers
-        // .filter()
-        // .barcodeUIDMatches(catalogedCoordinate.barcodeUID)
-        // .findFirstSync();
-
         if (container != null) {
           displayPointType = DisplayPointType.normal;
         }
@@ -147,6 +130,8 @@ class GridController {
         );
       }
     }
+
+    log(myPoints.toString());
     return myPoints;
   }
 
@@ -155,7 +140,6 @@ class GridController {
     //If you have a grid id.
     List<CatalogedCoordinate> catalogedCoordinates =
         getCatalogedCoordinatesSync(gridUID: gridUID);
-    // isar!.catalogedCoordinates.filter().gridUIDEqualTo(gridUID).findAllSync();
 
     if (catalogedCoordinates.isNotEmpty) {
       return getMarkersInCatalogedCoordinates(
@@ -163,104 +147,22 @@ class GridController {
     } else {
       //No Coordinates found so create a marker from the grid barcode.
       CatalogedCoordinate catalogedCoordinate = CatalogedCoordinate()
-        ..barcodeUID = getCatalogedGridSync(gridUID: gridUID)!
-            .barcodeUID //isar!.catalogedGrids.getSync(gridUID)!.barcodeUID
+        ..barcodeUID = getCatalogedGridSync(gridUID: gridUID)!.barcodeUID
         ..coordinate = EmbeddedVector3.fromVector(vm.Vector3(0, 0, 0))
         ..gridUID = gridUID
         ..rotation = null
         ..timestamp = DateTime.now().millisecondsSinceEpoch;
 
-      putCatalogedCoordiante(catalogedCoordinate: catalogedCoordinate);
-      // isar!.writeTxnSync(
-      //     () => isar!.catalogedCoordinates.putSync(catalogedCoordinate));
+      //Put catalogedCoordinate.
+      isarPut(
+        collection: Collections.CatalogedCoordinate,
+        object: catalogedCoordinate,
+      );
 
       Marker marker = getMarker(
           barcodeUID: getCatalogedGridSync(gridUID: gridUID)!.barcodeUID)!;
-      // isar!.markers
-      //     .filter()
-      //     .barcodeUIDMatches(isar!.catalogedGrids.getSync(gridUID)!.barcodeUID)
-      //     .findFirstSync()!;
 
       return [marker];
     }
   }
 }
-
-// ///Finds the origin container of a [CatalogedContainer]
-// ///  _____              _____
-// /// |     |     /\        |     |\   |
-// /// |_____|    /__\       |     | \  |
-// /// |         /    \      |     |  \ |
-// /// |        /      \   __|__   |   \|
-// ///
-// ///
-// ///           |
-// ///           |
-// ///       \   |   /
-// ///        \  |  /
-// ///         \ | /
-// ///          \ /
-// ///
-// ///
-
-// CatalogedContainer findOriginContainer(
-//     CatalogedContainer catalogedContainer) {
-//   //hOw tO fInD tHe OrIgIn CoNtAiNeR ???
-//   //THINK.
-
-//   //1. Check if any Grids exist
-//   List<CatalogedCoordinate> catalogedCoordinates =
-//       isar!.catalogedCoordinates.where().findAllSync();
-
-//   if (catalogedCoordinates.isEmpty) {
-//     //No Grids exist yet.
-//     //Check if this container is linked to a marker.
-
-//     Marker? marker = isar!.markers
-//         .filter()
-//         .parentContainerUIDMatches(catalogedContainer.containerUID)
-//         .findFirstSync();
-
-//     if (marker != null) {
-//       //This container is a marker.
-//       return catalogedContainer;
-//     } else {
-//       //This container is not a marker.
-//       //Check if parent is a marker.
-//       ContainerRelationship? containerRelationship = isar!
-//           .containerRelationships
-//           .filter()
-//           .containerUIDMatches(catalogedContainer.containerUID)
-//           .findFirstSync();
-
-//       if (containerRelationship != null) {
-//         //Has Parent.
-//         CatalogedContainer parentContainer = isar!.catalogedContainers
-//             .filter()
-//             .containerUIDMatches(containerRelationship.parentUID!)
-//             .findFirstSync()!;
-
-//         Marker? parentMarker = isar!.markers
-//             .filter()
-//             .parentContainerUIDMatches(containerRelationship.parentUID!)
-//             .findFirstSync();
-
-//         if (parentMarker != null) {
-//           //Parent is marker.
-//           return parentContainer;
-//         } else {
-//           //Parent is not marker.
-//           return catalogedContainer;
-//         }
-//       } else {
-//         //Does not have parent.
-//         return catalogedContainer;
-//       }
-//     }
-
-//     // return catalogedContainer;
-//   } else {
-//     //No Grids do exist.
-//     return catalogedContainer;
-//   }
-// }

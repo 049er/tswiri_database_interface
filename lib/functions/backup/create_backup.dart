@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
+// ignore: depend_on_referenced_packages
 import 'package:archive/archive_io.dart';
 
 @pragma('vm:entry-point')

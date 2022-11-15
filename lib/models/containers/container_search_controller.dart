@@ -44,8 +44,7 @@ class ContainerSearchController {
 
   //Returns a list of container Search Types.
   List<String> filterTypes() {
-    List<String> filterTypes =
-        containerTypes.map((e) => e.containerTypeName).toList();
+    List<String> filterTypes = containerTypes.map((e) => e.name).toList();
 
     return filterTypes;
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tswiri_database/export.dart';
 import 'package:tswiri_database/tswiri_database.dart';
 import 'package:tswiri_database_interface/functions/isar/get_functions.dart';
 

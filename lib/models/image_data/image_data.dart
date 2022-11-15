@@ -7,7 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image/image.dart' as img;
-import 'package:tswiri_database/embedded/embedded_size/embedded_size.dart';
 import 'package:tswiri_database/export.dart';
 import 'package:tswiri_database/tswiri_database.dart';
 import 'package:tswiri_database_interface/functions/embedded/get_size.dart';
@@ -58,7 +57,8 @@ class ImageData {
     mlDetectedLabelTexts = [];
     if (mlDetectedLabelTextIDs.isNotEmpty) {
       mlDetectedLabelTexts = getMlDetectedLabelTextsOnMlDetectedLabelTextIDs(
-          mlDetectedLabelTextIDs: mlDetectedLabelTextIDs);
+        mlDetectedLabelTextIDs: mlDetectedLabelTextIDs,
+      );
       // isar!.mLDetectedLabelTexts
       //     .filter()
       //     .anyOf(
@@ -173,12 +173,10 @@ class ImageData {
       ..photoName = photoName
       ..thumbnailExtention = extention
       ..thumbnailName = '${photoName}_thumbnail'
-      ..photoSize = EmbeddedSize.fromSize(embeddedFromSize(size));
+      ..photoSize = photoSizeFromSize(size);
 
-    int photoID = putPhoto(photo: newPhoto)!;
-
-    putPhotoLabels(
-      photoID: photoID,
+    createPhoto(
+      photo: newPhoto,
       mlPhotoLabels: mlPhotoLabels,
       photoLabels: photoLabels,
       mlObjects: mlObjects,
@@ -196,29 +194,17 @@ class ImageData {
 
     //1. Find all the objects in the photo.
     List<MLObject> mlObjects = getMlObjects(photoID: photo.id);
-    // isar!.mLObjects.filter().photoIDEqualTo(photo.id).findAllSync();
 
     //2. Find all the mlObject labels.
     List<MLObjectLabel> mlObjectLabels =
         getRelatedMLObjectLabels(mlObjects: mlObjects);
-    // isar!.mLObjectLabels
-    //     .filter()
-    //     .allOf(
-    //         mlObjects, (q, MLObject element) => q.objectIDEqualTo(element.id))
-    //     .findAllSync();
 
     //3. Find all the object labels.
     List<ObjectLabel> objectLabels =
         getRelatedObjectLabels(mlObjects: mlObjects);
-    // isar!.objectLabels
-    //     .filter()
-    //     .allOf(
-    //         mlObjects, (q, MLObject element) => q.objectIDEqualTo(element.id))
-    //     .findAllSync();
 
     //4. Find all the mlTextElements.
     List<MLTextElement> mlTextElements = getMLTextElements(photoID: photo.id);
-    // isar!.mLTextElements.filter().photoIDEqualTo(photo.id).findAllSync();
 
     // log(mlTextElements.length.toString(), name: 'MLTextElements');
 
@@ -267,12 +253,11 @@ class ImageData {
     // log('mlTextLines: ${mlTextLines.length}');
     // log('mlTextElements: ${mlTextElements.length}');
     // log('photoLabels: ${photoLabels.length}');
-
     // log(photo.getPhotoSize().toString());
 
     return ImageData(
       photoFile: photoFile,
-      size: getSize(photo.photoSize.data!),
+      size: getSize(photo.photoSize),
       rotation: InputImageRotation.rotation0deg,
       photoLabels: photoLabels,
       mlPhotoLabels: mlPhotoLabels,
@@ -296,8 +281,10 @@ class ImageData {
       tagTexts.add(tagText);
     }
 
-    putPhotoLabel(photoLabel: newPhotoLabel);
-    // isar!.photoLabels.putSync(newPhotoLabel);
+    isarPut(
+      collection: Collections.PhotoLabel,
+      object: newPhotoLabel,
+    );
   }
 
   ///Remove a photoLabel for an existing photo.

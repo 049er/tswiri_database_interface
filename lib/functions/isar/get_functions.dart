@@ -5,9 +5,11 @@ int getTagTextID(String text) {
   //Check if it exists.
   int? tagTextID = getTagTextSync(text: text)?.id;
   //Put if not.
-  tagTextID ??= putTagText(
-    tagText: TagText()..text = text.toLowerCase().trim(),
+  tagTextID ??= isarPut(
+    collection: Collections.TagText,
+    object: TagText()..text = text.toLowerCase().trim(),
   );
+
   return tagTextID!;
 }
 
@@ -16,8 +18,9 @@ int getMLDetectedLabelTextID(String text) {
   //Check if it exists.
   int? mlLabelTextID = getMlDetectedLabelText(text: text)?.id;
   //Put if not.
-  mlLabelTextID ??= putMlDetectedLabelText(
-    mlDetectedLabelText: MLDetectedLabelText()
+  mlLabelTextID ??= isarPut(
+    collection: Collections.MLDetectedLabelText,
+    object: MLDetectedLabelText()
       ..detectedLabelText = text.toLowerCase().trim(),
   );
 
@@ -29,10 +32,12 @@ int getMLDetectedElementTextID(String text) {
   //Check if it exists.
   int? detectedElementText =
       getMlDetectedElementTextSync(text: text.toLowerCase().trim())?.id;
+
   //Put if not.
-  detectedElementText ??= putMLDetectedElementText(
-      mlDetectedElementText: MLDetectedElementText()
-        ..detectedText = text.toLowerCase().trim());
+  detectedElementText ??= isarPut(
+    collection: Collections.MLDetectedElementText,
+    object: MLDetectedElementText()..detectedText = text.toLowerCase().trim(),
+  );
 
   return detectedElementText!;
 }

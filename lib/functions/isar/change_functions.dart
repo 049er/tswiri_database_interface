@@ -28,7 +28,9 @@ bool changeParent({
     //     .findFirstSync();
 
     if (containerRelationship != null) {
-      deleteContainerRelationship(id: containerRelationship.id);
+      isarDelete(
+          collection: Collections.ContainerRelationship,
+          id: containerRelationship.id);
       // isar!.writeTxnSync(
       //   () => isar!.containerRelationships.deleteSync(containerRelationship.id),
       // );
@@ -38,9 +40,10 @@ bool changeParent({
       ..containerUID = currentContainer.containerUID
       ..parentUID = parentContainer.containerUID;
 
-    putContainerRelationship(containerRelationship: newContainerRelationship);
-    // isar!.writeTxnSync(
-    //     () => isar!.containerRelationships.putSync(newContainerRelationship));
+    isarPut(
+      collection: Collections.ContainerRelationship,
+      object: newContainerRelationship,
+    );
 
     return true;
   }

@@ -102,7 +102,7 @@ Future<void> swapSpace(Directory directory) async {
   await Future.delayed(const Duration(milliseconds: 250));
 
   //Initiate the isar connection again
-  initiateMobileIsar(directory: isarDirectory!.path, inspector: true);
+  initiateMobileIsar(directory: directory.path, inspector: true);
 }
 
 ///Create a new swap space.

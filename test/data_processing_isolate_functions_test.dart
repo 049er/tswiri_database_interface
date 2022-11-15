@@ -1,4 +1,4 @@
-import 'dart:developer';
+// ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tswiri_database/collections/essential/cataloged_coordinate/cataloged_coordinate.dart';
