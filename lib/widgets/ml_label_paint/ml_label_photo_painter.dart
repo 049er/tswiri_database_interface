@@ -66,14 +66,14 @@ class MLLabePainter extends CustomPainter {
         for (MLObjectLabel label in imageData.mlObjectLabels
             .where(
               (element) =>
-                  element.objectID == object.id &&
+                  element.objectUID == object.id &&
                   element.userFeedback != false &&
                   element.confidence >= (objectLabelConfidence ?? 0.5),
             )
             .toList()) {
-          MLDetectedLabelText mlDetectedLabelText = imageData
-              .mlDetectedLabelTexts
-              .firstWhere((element) => element.id == label.detectedLabelTextID);
+          MLDetectedLabelText mlDetectedLabelText =
+              imageData.mlDetectedLabelTexts.firstWhere(
+                  (element) => element.id == label.detectedLabelTextUID);
           builder.addText(
             '${mlDetectedLabelText.detectedLabelText} (${(label.confidence * 100).toInt()}%) \n',
           );
@@ -122,19 +122,19 @@ class MLLabePainter extends CustomPainter {
         );
 
         List<MLTextLine> textLines = imageData.mlTextLines
-            .where((element) => element.blockID == textBlock.id)
+            .where((element) => element.blockUID == textBlock.id)
             .toList();
 
         List<MLTextElement> textElements = imageData.mlTextElements
             .where((element) =>
-                textLines.map((e) => e.id).toList().contains(element.lineID))
+                textLines.map((e) => e.id).toList().contains(element.lineUID))
             .toList();
 
         //   // log(textElements.toString());
 
         List<String> blockText = textElements
             .map((e) =>
-                getMlDetectedElementTextSync(id: e.detectedElementTextID)!
+                getMlDetectedElementTextSync(id: e.mlDetectedElementTextUID)!
                     .detectedText)
             .toList();
 

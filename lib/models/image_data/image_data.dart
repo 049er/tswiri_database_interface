@@ -50,9 +50,9 @@ class ImageData {
     //1. Find all the mlDetectedLabelTexts.
     Set<int> mlDetectedLabelTextIDs = {};
     mlDetectedLabelTextIDs
-        .addAll(mlObjectLabels.map((e) => e.detectedLabelTextID));
+        .addAll(mlObjectLabels.map((e) => e.detectedLabelTextUID));
     mlDetectedLabelTextIDs
-        .addAll(mlPhotoLabels.map((e) => e.detectedLabelTextID));
+        .addAll(mlPhotoLabels.map((e) => e.detectedLabelTextUID));
 
     mlDetectedLabelTexts = [];
     if (mlDetectedLabelTextIDs.isNotEmpty) {
@@ -68,7 +68,7 @@ class ImageData {
 
     //2. Find all the mLDetectedElementTexts.
     Set<int> mLDetectedElementTextIDs =
-        mlTextElements.map((e) => e.detectedElementTextID).toSet();
+        mlTextElements.map((e) => e.mlDetectedElementTextUID).toSet();
 
     mLDetectedElementTexts = [];
     if (mLDetectedElementTextIDs.isNotEmpty) {
@@ -83,8 +83,8 @@ class ImageData {
 
     //3. find all the textTags.
     Set<int> tagTextIDs = {};
-    tagTextIDs.addAll(objectLabels.map((e) => e.tagTextID));
-    tagTextIDs.addAll(photoLabels.map((e) => e.tagTextID));
+    tagTextIDs.addAll(objectLabels.map((e) => e.tagTextUID));
+    tagTextIDs.addAll(photoLabels.map((e) => e.tagTextUID));
 
     tagTexts = [];
     if (mLDetectedElementTexts.isNotEmpty) {
@@ -169,7 +169,7 @@ class ImageData {
     //9. Create Photo Entry
     Photo newPhoto = Photo()
       ..containerUID = containerUID
-      ..extention = extention
+      ..photoExtention = extention
       ..photoName = photoName
       ..thumbnailExtention = extention
       ..thumbnailName = '${photoName}_thumbnail'
@@ -273,8 +273,8 @@ class ImageData {
   ///Add a photoLabel for an existing photo.
   void addPhotoLabel(TagText tagText) {
     PhotoLabel newPhotoLabel = PhotoLabel()
-      ..photoID = photo!.id
-      ..tagTextID = tagText.id;
+      ..photoUID = photo!.id
+      ..tagTextUID = tagText.id;
 
     photoLabels.add(newPhotoLabel);
     if (!tagTextsContain(tagText)) {

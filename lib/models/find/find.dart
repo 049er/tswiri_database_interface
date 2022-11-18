@@ -173,7 +173,7 @@ class Find extends ChangeNotifier {
           containerUID: e.containerUID,
           textSimilarity: enteredKeyword.similarityTo(e.name),
           name: e.name ?? 'err',
-          containerTypeID: e.containerTypeID,
+          containerTypeID: e.containerTypeUID,
         );
       },
     ).toList();
@@ -248,7 +248,7 @@ class Find extends ChangeNotifier {
       // isar!.photoLabels.filter().tagTextIDEqualTo(tagText.id).findAllSync();
 
       for (PhotoLabel photoLabel in photoLabels) {
-        Photo? photo = getPhotoSync(id: photoLabel.photoID);
+        Photo? photo = getPhotoSync(id: photoLabel.photoUID);
         // isar!.photos.getSync(photoLabel.photoID);
         if (photo != null) {
           results.add(PhotoLabelResult(
@@ -278,11 +278,11 @@ class Find extends ChangeNotifier {
 
       for (ObjectLabel objectLabel in objectLabels) {
         //Find relevant mlObject.
-        MLObject? mlObject = getMLObject(id: objectLabel.objectID);
+        MLObject? mlObject = getMLObject(id: objectLabel.objectUID);
         // isar!.mLObjects.getSync(objectLabel.objectID);
         if (mlObject != null) {
           //Find relevant photo.
-          Photo? photo = getPhotoSync(id: mlObject.photoID);
+          Photo? photo = getPhotoSync(id: mlObject.photoUID);
           // isar!.photos.getSync(mlObject.photoID);
           if (photo != null) {
             //Create ObjectLabelResult.
@@ -320,7 +320,7 @@ class Find extends ChangeNotifier {
 
       for (MLPhotoLabel mlPhotoLabel in mlPhotoLabels) {
         //Find relevant photo.
-        Photo? photo = getPhotoSync(id: mlPhotoLabel.photoID);
+        Photo? photo = getPhotoSync(id: mlPhotoLabel.photoUID);
         // isar!.photos.getSync(mlPhotoLabel.photoID!);
 
         if (photo != null &&
@@ -358,11 +358,11 @@ class Find extends ChangeNotifier {
 
       for (MLObjectLabel mlObjectLabel in mlObjectLabels) {
         //Find relevant MLObject.
-        MLObject? mlObject = getMLObject(id: mlObjectLabel.objectID);
+        MLObject? mlObject = getMLObject(id: mlObjectLabel.objectUID);
         // isar!.mLObjects.getSync(mlObjectLabel.objectID);
         if (mlObject != null) {
           //Find relevant photo.
-          Photo? photo = getPhotoSync(id: mlObject.photoID);
+          Photo? photo = getPhotoSync(id: mlObject.photoUID);
           // isar!.photos.getSync(mlObject.photoID);
           if (photo != null && mlObjectLabel.userFeedback != false) {
             //Create MLObjectLabelResult.
@@ -400,7 +400,7 @@ class Find extends ChangeNotifier {
 
       for (MLTextElement mlTextElement in mlTextElements) {
         //Find relevent photo.
-        Photo? photo = getPhotoSync(id: mlTextElement.photoID);
+        Photo? photo = getPhotoSync(id: mlTextElement.photoUID);
         // isar!.photos.getSync(mlTextElement.photoID);
         if (photo != null) {
           results.add(

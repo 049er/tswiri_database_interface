@@ -71,8 +71,6 @@ class GridController {
     List<CatalogedCoordinate> coordinates =
         getCatalogedCoordinatesSync(gridUID: gridUID);
 
-    log(coordinates.toString());
-
     //2. Calcualte the unitOffset to use.
     Offset unitOffset = calculateUnitVectors(
       coordinateEntries: coordinates,
@@ -130,8 +128,6 @@ class GridController {
         );
       }
     }
-
-    log(myPoints.toString());
     return myPoints;
   }
 

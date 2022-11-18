@@ -36,8 +36,6 @@ String textDetectionPref = 'textDetection';
 double focalLength = 1;
 String focalLengthPref = 'focalLength';
 
-//Flash Settings
-
 ///Flash on/off during image capture.
 bool flashOnPhotos = false;
 String flashOnPhotosPref = 'flashOnPhotos';
@@ -57,6 +55,10 @@ String flashOnNavigationPref = 'flashOnNavigation';
 ///Has shown Beta Warning.
 bool hasShownBetaWarning = false;
 String hasShownBetaWarningPref = 'hasShownBetaWarning';
+
+///Used to store the currently loaded space directory.
+String? spaceDirectoryPath;
+String spaceDirectoryPathPref = 'spaceDirectoryPathPref';
 
 Future<void> loadAppSettings() async {
   //Get Camera descriptions.
@@ -88,10 +90,6 @@ Future<void> loadAppSettings() async {
 
   //Color Mode.
   colorModeEnabled = prefs.getBool(colorModeEnabledPref) ?? false;
-
-  // //Spaces
-  // currentSpacePath = prefs.getString(currentSpacePathPref) ??
-  //     '${(await getApplicationSupportDirectory()).path}/main_space';
 
   //Flash
   flashOnPhotos = prefs.getBool(flashOnPhotosPref) ?? false;
